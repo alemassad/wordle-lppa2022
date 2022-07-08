@@ -1,0 +1,91 @@
+* {
+    color: white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+body {
+    background-color: #121213;
+}
+.juegoContenedor {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.tituloContenedor {
+    text-align: center;
+    width: 500px;
+    border-bottom: solid 1px #3a3a3a;
+}
+.cuadroContenedor {
+    width: 330px;
+    margin-bottom: 30px;
+}
+.teclaContenedor {
+    width: 530px;
+    display: flex;
+    flex-wrap: wrap;
+}
+.teclaContenedor button {
+    width: 43px;
+    height: 58px;
+    border-radius: 3px;
+    border: none;
+    background-color: #4b7386;
+    margin: 4px;
+}
+.teclaContenedor button:nth-child(11){
+    margin-left: 15px;
+}
+.teclaContenedor button:nth-child(21),
+.teclaContenedor button:nth-child(29) {
+    width: 65px;
+}
+.cuadroContenedor div {
+    display: flex;
+}
+.cuadroContenedor .cuadro{
+    width: 62px;
+    height: 62px;
+    border: 2px solid #3a3a3c;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;    
+    align-items: center;
+    margin: 2px;
+}
+.mensajeContenedor {
+    height: 30px;
+}
+.mensajeContenedor p {
+    background-color: #818384;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 0;
+}
+.cuadro.cambiar {
+    animation: 0.5s linear flipping;
+}
+@keyframes flipping {
+    0% {
+        transform: rotateX(0deg);
+    }
+    50% {
+        transform: rotateX(90deg);
+    }
+    100% {
+        transform: rotateX(0deg);
+    }
+}
+.grisear {
+    background-color: #515153 !important;
+    border: none !important;
+}
+.amarillear {
+    background-color: #f7ce17 !important;
+    border: none !important;
+}
+.verdear {
+    background-color: #399630 !important;
+    border: none !important;
+}
