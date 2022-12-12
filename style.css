@@ -5,11 +5,23 @@
 body{
     background-color: #121212;
 }
-.contenedor-titulo{/* 
-    text-align: center;
-    width: 500px;*/
-    border: solid 1px #5f5b5b; 
-
+nav ul{
+    display: flex;
+    justify-content: center;
+    list-style-type:none;
+}
+nav h1{
+    display: flex;
+    font-size: 30px;    
+}
+ul{
+    border: solid 1px #ece4e4;
+}
+li {    
+    margin: 0 .55rem;
+}
+header .contenedor-titulo{
+    border: solid 1px #5f5b5b;
     display: flex;
     justify-content: space-around;
     float: left;
@@ -19,8 +31,7 @@ body{
     padding: 5px;
     color: rgb(170, 235, 243);
 }
-.contenedor-titulo ul, h1{
-    border: solid 1px #ece4e4;
+.contenedor-titulo ul, h1{    
     list-style-type: none;    
     display: contents;
     justify-content: space-around;
@@ -41,8 +52,7 @@ body{
 button:hover {
     background-color: rgb(45, 41, 240);
 }
-.contenedor-juego{
-    height: 90vh;
+.contenedor-juego{    
     display: flex;
     flex-direction: column;
     justify-content: space-between;
