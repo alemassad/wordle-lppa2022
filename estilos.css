@@ -89,3 +89,9 @@ body {
     background-color: #399630 !important;
     border: none !important;
 }
+@media (max-width: 600px) {
+    nav, article {
+      width: 100%;
+      height: auto;      
+    }
+}

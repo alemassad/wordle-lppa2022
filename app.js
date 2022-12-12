@@ -1,7 +1,7 @@
-const cuadro = document.querySelector('.cuadroContenedor')
-const tecla = document.querySelector('.teclaContenedor')
+const cuadro = document.querySelector('.cuadro-contenedor')
+const tecla = document.querySelector('.tecla-contenedor')
 const wordle='SUPER'
-const mensajeMostrar= document.querySelector('.mensajeContenedor')
+const mensajeMostrar= document.querySelector('.mensaje-contenedor')
 let columnaActual=0
 let cuadroActual=0
 let finalJuego=false

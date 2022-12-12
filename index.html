@@ -1,25 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="estilos.css">
+    <title>Wordle</title>
+    <link rel="stylesheet" href="style.css">
+
 </head>
-    <body>
-        <div class="juegoContenedor">
-            <div class="tituloContenedor">
-                <h1>Wordle</h1>
-            </div>
-            <div class="mensajeContenedor"></div>
-            <div class="cuadroContenedor"></div>
-            <div class="teclaContenedor"></div>
-        
+<body>
+    <div class="contenedor-juego">
+        <div class="contenedor-titulo">   
+               
+            <ul>
+                <button class="menu-boton" id="menu-boton">Menú</button>
+                <!-- <h1 class="menu-boton" id="menu-boton">Wordle</h1>  -->   
+                <li><a href="#" class="menu-bar ocultar">Guardar</a></li>
+                <li><a href="#" class="menu-bar ocultar">Cargar</a></li>
+                <li><a href="#" class="menu-bar ocultar">Estadisticas</a></li>
+                <li><a href="#" class="menu-bar ocultar">Contacto</a></li>              
+            </ul>
+            
         </div>
 
+        <div class="contenedor-mensaje">
+            <div id="modal" class="modal">
+                                                            
+            </div>
+        </div>
 
-
-        <script src="app.js"></script>
-    </body>
+        <div class="contenedor-caja">
+        </div>
+        
+        <div class="contenedor-letra">
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
 </html>
