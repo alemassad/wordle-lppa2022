@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;    
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif, Tahoma, Geneva, Verdana, sans-serif, Geneva, Tahoma, sans-serif 'Roboto', sans-serif;
+    text-shadow: 2px 0 0  rgb(92, 58, 50);
+}
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-image: url(../imagen/contacto.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: #f7f0f0;
+}
+header {
+    height: 50px;
+    background-color: rgba(18, 59, 241, 0.2);
+    width: 90%;;
+    padding: 10px;
+    text-align: center;
+    font-size: 35px;
+    color: rgb(248, 245, 245);
+}
+nav {
+    align-content: center;
+    width: 90%;
+    height: 100%; 
+    background: rgb(11, 93, 131, 0.3);
+    padding: 15px;
+    border: solid whitesmoke 1px;    
+}  
+nav ul{
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;    
+} 
+a:hover{
+    background: rgb(233, 148, 78);
+}
+nav a{
+    text-decoration: none;    
+} 
+nav a:visited{
+    color:#ffffff
+}
+li {
+    color: #ffffff;
+    font-family:Verdana, Geneva, Tahoma, sans-serif ;
+}
+
+footer {
+    background-color: rgb(15, 15, 15,0.4);
+    padding: 10px;
+    text-align: center;
+    color: white;    
+    width: 90%;
+    border-top: solid whitesmoke 2px;
+}
+h2 {
+    font-size: 40px;
+    margin: 40px;
+    padding: 10px;
+    border-bottom: 2px solid white;    
+}
+.formulario {
+    width: 500px;
+    height: 500px;
+    padding: 30px;
+    margin: 30px;
+    background-color: rgba(7, 7, 7, 0.692);
+    text-align: center;
+    border: 1px solid rgba(12, 12, 12, 0.534);
+}
+.formulario input {
+    width: 70%;
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
+    background-color: transparent;
+    border: none;
+    border-bottom: white thin solid;
+    text-align: center;
+    outline: none;
+    padding: 15px;
+    font-size: 15px;
+    color: white;    
+}
+.formulario textarea{
+    width: 70%;
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
+    background-color:rgba(39, 125, 223, 0.103);
+    border: none;
+    border: white thin solid;
+    text-align: center;
+    outline: none;
+    padding: 15px;
+    font-size: 20px;
+    color: white;    
+}
+label{
+    font-size:20px ;
+}
+.formulario input[type="submit"]{
+    width: 30%;
+    margin: auto;
+    border: solid thin white;
+    padding: 14px;
+    border-radius: 30px;
+    background-color: rgba(68, 22, 231, 0.5);    
+    margin-top: 0px;
+    font-size: 20px;
+    cursor: pointer;
+    color: rgb(224, 252, 250);    
+}
+.error-nombre, .error-correo {
+    text-align: center;
+    font-size: 15px;
+    text-align:center;
+    color: red;
+  }  
+.valido-nombre, .valido-correo {
+    text-align: center;
+    font-size: 15px;
+    text-align:center;
+    color: rgb(13, 139, 13);
+  }
+input[type="submit"]:hover {
+    background-color: rgb(55, 245, 245, 0.6);
+}
+@media (max-width: 600px) {
+    nav, article {
+      width: 100%;
+      height: auto;      
+    }
+}

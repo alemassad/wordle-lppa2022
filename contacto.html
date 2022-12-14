@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final LPPA Wordle</title>
+    <link rel="stylesheet" href="estilos/normalize.css">
+    <link rel="stylesheet" href="estilos/style-contacto.css">
+    <script src="./scripts/contacto2.js"></script>
+</head>
+<body>
+    <header class="cabecera">
+        Contactar
+    </header>    
+    <nav>            
+        <ul class="nav-List">
+            <li>Menu</li>
+            <li>Articulos</li>
+            <li>Textos</li>
+            <li>Interés</li>
+            <li><a href="contacto.html" class="menu-bar ocultar">Contacto</a></li>                  
+        </ul>
+    </nav>    
+    <div class="contenedor-sesion">
+
+        <form class="formulario" id="formulario">
+            <h2 class="crear-cuenta">Contactar</h2>
+            
+            <label for="input-nombre">Nombre</label>            
+            <input type="text" class="input-nombre" id="input-nombre">
+            <small id="error-nombre" class="error-nombre" hidden>Introducir un Nombre correcto</small>
+            <small id="valido-nombre" class="valido-nombre" hidden>Nombre válido</small>
+           
+
+            <label for="input-correo">Email</label>
+            <input type="text" class="input-correo" id="input-correo">
+            <small id="error-correo" class="error-correo" hidden>Introducir un Correo correcto</small>
+            <small id="valido-correo" class="valido-correo" hidden>Correo correcto</small>
+            
+            <label for="input-textarea">Mensaje</label>        
+            <textarea class="input-textarea" id="input-textarea" minlength="6" value="ingrese mensaje"></textarea>    
+            <small id="error-mensaje" class="error-mensaje" hidden>Introducir un mensaje correcto</small>
+            <small id="valido-mensaje" class="valido-mensaje" hidden>Mensaje válido</small>
+            
+            <input type="submit" id="btn-mandar" class="btn-mandar" value="Enviar">      
+       
+        </form>
+    </div>      
+ 
+<footer>
+    <p>Final LPPA 2022</p>
+</footer>
+</body>
+</html>
