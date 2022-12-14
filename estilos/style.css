@@ -128,10 +128,10 @@ button:hover {
     min-height: 270px;
     padding: 10px;
     border-radius: 10px;
-    background-color: rgba(2, 29, 22, 0.089);
+    background-color: rgba(25, 32, 31, 0.877);
     text-align: center; 
     visibility: hidden; 
-    color: #121212;
+    color: #ffffff;
     border: #fff 1px solid;
 }
 .modal button { 

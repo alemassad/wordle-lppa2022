@@ -3,8 +3,9 @@ const teclado = document.querySelector(".contenedor-letra");
 const mostrarMensaje = document.querySelector(".contenedor-mensaje");
 const modal = document.getElementById("modal");
 const mostrarReloj = document.getElementById("reloj");
-
+const menuGuardar= document.querySelector("#menuGuardar");
 var mensajeInicial="Hola ";
+var tiempo="";
 
 //const cronos = document.getElementById("crono");
 
@@ -56,12 +57,13 @@ btnJugarNuevo.onclick =function(){
           
         mensajeInicial= mensajeInicial+inputNombre.value;
         localStorage.setItem("nombre",inputNombre.value);    
-        iniciarJuego();   
+        iniciarJuego();  
+        return; 
     }
-    document.addEventListener("keydown", event => {
+    modal.addEventListener("keydown", event => {
         if(event.keyCode == 13){ //Tecla Enter        
         iniciarJuego();           
-        return //volvemos y no se agrega la letra
+        return; //volvemos y no se agrega la letra
         }
     });    
 }
@@ -69,7 +71,9 @@ btnJugar.onclick =function(){
          
     modal.style.visibility= "hidden";
     iniciarJuego();  
+    
 }
+const adivinaArray= [];//array comodín para colocar data
 let columnaActual=0;
 let cajaActual=0;
 let finJuego=false;
@@ -108,7 +112,7 @@ const iniciarJuego= () => { //aquí comienza el juego
 
     
     reloj();
-    
+    //startTimer();
     while (modal.firstChild) { //vaciamos el modal
         modal.removeChild(modal.firstChild);
     }  
@@ -199,14 +203,16 @@ const iniciarJuego= () => { //aquí comienza el juego
             console.log("palabra actual es: "+palabraActual+" Y la palabra wordle es: "+wordle);
             colorearCaja(); //llamamos a la funcion para colorear los imput
             if (wordle == palabraActual) { // si avidinamos la palabra ganadora, finalizamos el juego
-                darMensaje("Adivinaste!!");
+                let mensaje="Adivinaste!!";
+                darMensaje(mensaje);
                 finJuego = true;
                 modal.style.visibility= "visible";   
                 return
             } else {
                 if (columnaActual >= 5 ) { //si estamos en el último input de la grilla, perdimos el juego
                     finJuego = true;
-                    darMensaje("Game over!");
+                    let mensaje= "Game over";
+                    darMensaje(mensaje);
                     return
                 }
                 if (columnaActual < 5 ) { // si finalizamos la fila, saltamos a la fila siguiente de inputs
@@ -222,7 +228,7 @@ const iniciarJuego= () => { //aquí comienza el juego
         const elementoMensaje = document.createElement("h2");//creamos <P>
         elementoMensaje.textContent = mensaje;     
         modal.append(elementoMensaje);
-        setTimeout(() => modal.removeChild(elementoMensaje), 5000);
+        
 
         const btnCerrar = document.createElement("button");//creamos boton cerrar
         btnCerrar.textContent = "cerrar";
@@ -238,7 +244,7 @@ const iniciarJuego= () => { //aquí comienza el juego
     const colorearCaja = () => { // funcion que verifica la letra y colorea el input
         const filaCaja = document.querySelector("#columna"+columnaActual).childNodes;
         let remarcaCaja= wordle;
-        const adivinaArray= [];//array comodín para colocar data
+        
         
         filaCaja.forEach(element => {
             adivinaArray.push({letra : element.getAttribute("data"), color: "grisear"});// obtenemos el atributo con data de la letra
@@ -255,7 +261,7 @@ const iniciarJuego= () => { //aquí comienza el juego
                 remarcaCaja = remarcaCaja.replace(e.letra, "");
             }
         })
-        console.log("Array: ", adivinaArray);
+        console.log("Array actual: ", adivinaArray);
 
         filaCaja.forEach((input, indice) => {
             input.classList.add(adivinaArray[indice].color);
@@ -264,22 +270,72 @@ const iniciarJuego= () => { //aquí comienza el juego
 
     }
 
-//funcionalidades Reloj
-function reloj(){
-    
-    let tiempo=0;    
+    //funcionalidades de Reloj  
+    function reloj() {       
 
+        var timer =  1, minutos, segundos;
+        var reloj = setInterval(function () {
+            minutos = parseInt(timer / 60, 10);
+            segundos = parseInt(timer % 60, 10);    
+            minutos = minutos > 10 ? "0" + minutos : minutos;
+            segundos = segundos < 10 ? "0" + segundos : segundos;
     
-    setInterval(function(){
-            if (finJuego == false) {
-                tiempo++;
-                mostrarReloj.innerHTML = "CRONO: "+tiempo;
+            mostrarReloj.textContent = minutos + ":" + segundos;
+            
+            if (finJuego){
+                clearInterval(reloj);
+                tiempo= mostrarReloj.textContent;                       
+                console.log("timer: "+tiempo);
+            }      
+            if (++timer < 0) {
+                finJuego = null;                   
             }
-            if (finJuego == true) {        
-                                                                
-                finJuego=null;                           
-            }
-    },1000);
-    mostrarReloj.innerHTML = "Tiempo: "+tiempo;
-}
+        }, 1000);
+    }
+
+    menuGuardar.addEventListener("click", function () {        
+        //Array para guardar juego actual
+        let guardar= {};
+
+        guardar.fecha = new Date().toLocaleString("es-AR", {timeZone:"America/Argentina/Buenos_Aires"});
+        guardar.tiempo =tiempo;
+        guardar.respuestas = adivinaArray;
+        guardar.usuario = nombre;
+        guardar.palabraGanadora = wordle;        
+
+        //rescatamos los datos guardados"
+        let guardarJuego = JSON.parse(localStorage.getItem("guardar")) || [];
+        guardarJuego.push(guardar);
+        let guardarJuegoJSON = JSON.stringify(guardarJuego);
+        //guardamos datos
+        localStorage.setItem("guardar", guardarJuegoJSON);
+
+        console.log(guardarJuegoJSON) 
+
+        //mostramos los datos actuales en el modal  
+        modal.style.visibility= "visible";       
+            
+        const datos= guardar.respuestas;
+        console.log(datos);   
+        let elementos="";               
+        datos.forEach(elem=>{
+            console.log(elem);
+            elementos+=`
+                <h6>${elem.letra} - ${elem.color}</h6>                                    
+                `;                                                    
+        }); 
+        modal.innerHTML= `<h3>Juego guardado </h3>` +
+        " Fecha "+guardar.fecha+
+        " - Tiempo "+guardar.tiempo+
+        " - Jugador "+guardar.usuario+
+        " - Wordle "+guardar.palabraGanadora +            
+        " - Respuestas "+elementos;
+        //boton para salir del modal
+        const btnSalir = document.createElement("button");
+        btnSalir.textContent = "salir";
+        btnSalir.setAttribute("id", "salir");
+        btnSalir.addEventListener("click", () => location.href="index.html");//recargamos la pagina
+        modal.append(btnSalir);
+      
+    });
 }
