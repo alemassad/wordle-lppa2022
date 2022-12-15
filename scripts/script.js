@@ -43,7 +43,7 @@ btnJugarNuevo.onclick =function(){
 
     const inputNombre = document.createElement("input");//creamos una caja de texto para el nombre   
     inputNombre.setAttribute("id", "inputNombre"); 
-    inputNombre.setAttribute("minlength", "4");   
+    inputNombre.setAttribute("minlength", "3");   
     modal.append(inputNombre);
 
     const btnMandar = document.createElement("button");//creamos boton para guardar el nombre
@@ -54,10 +54,11 @@ btnJugarNuevo.onclick =function(){
 
     inputNombre.focus();
     btnMandar.onclick =function(){                        
-          
-        mensajeInicial= mensajeInicial+inputNombre.value;
+       nombre=inputNombre.value;  
+        mensajeInicial= mensajeInicial+nombre;
         localStorage.setItem("nombre",inputNombre.value);    
         iniciarJuego();  
+        console.log("nuevo"+nombre);
         return; 
     }
     modal.addEventListener("keydown", event => {
@@ -335,7 +336,35 @@ const iniciarJuego= () => { //aquí comienza el juego
         btnSalir.textContent = "salir";
         btnSalir.setAttribute("id", "salir");
         btnSalir.addEventListener("click", () => location.href="index.html");//recargamos la pagina
-        modal.append(btnSalir);
-      
+        modal.append(btnSalir);      
+    });
+
+    menuCargar.addEventListener("click", function cargarPartida() { 
+
+        var datos = JSON.parse(localStorage.getItem("guardar")) || [];
+            
+        modal.style.visibility= "visible";          
+        
+        let elementos=""; 
+        let letras ="";             
+        datos.forEach(elem=>{
+            console.log(elem);
+            elementos+=`<tr class='table'>
+                            <td class='td'>${elem.fecha}</td>
+                            <td class='td'>${elem.tiempo}</td>
+                            <td class='td'>${elem.usuario}</td>
+                            <td class='td'>${elem.palabraGanadora}</td>                            
+                            <br>                            
+                        </tr>`;                                                        
+                                                                            
+        }); 
+        modal.innerHTML = elementos; 
+
+         //boton para salir del modal
+         const btnSalir = document.createElement("button");
+         btnSalir.textContent = "salir";
+         btnSalir.setAttribute("id", "salir");
+         btnSalir.addEventListener("click", () => location.href="index.html");//recargamos la pagina
+         modal.append(btnSalir);  
     });
 }
