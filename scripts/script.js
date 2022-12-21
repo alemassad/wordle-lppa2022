@@ -7,10 +7,8 @@ const menuGuardar= document.querySelector("#menuGuardar");
 var mensajeInicial="Hola ";
 var tiempo="";
 
-//const cronos = document.getElementById("crono");
-
 modal.style.visibility= "visible";       
-var nombre = localStorage.getItem("nombre");
+var nombre = localStorage.getItem("nombre") || "";
 
 if (localStorage.getItem("nombre")) {//cargamos el nombre del localstorage
     mensajeInicial= mensajeInicial+localStorage.getItem("nombre");
@@ -31,7 +29,6 @@ btnJugarNuevo.setAttribute("id", "jugar");
 modal.append(btnJugarNuevo);
 btnJugarNuevo.addEventListener("click", () => btnJugarNuevo);//cerramos el modalDeInicio
 
-
 btnJugarNuevo.onclick =function(){     
     modal.removeChild(btnJugar); 
     modal.removeChild(btnJugarNuevo);                   
@@ -51,22 +48,25 @@ btnJugarNuevo.onclick =function(){
     btnMandar.setAttribute("id", "mandar");    
     modal.append(btnMandar);
     btnMandar.addEventListener("click", () => btnMandar);
-
+    
     inputNombre.focus();
-    btnMandar.onclick =function(){                        
-       nombre=inputNombre.value;  
-        mensajeInicial= mensajeInicial+nombre;
-        localStorage.setItem("nombre",inputNombre.value);    
-        iniciarJuego();  
-        console.log("nuevo"+nombre);
+    btnMandar.onclick =function(){  
+        guardarInputNombre();                                
+        iniciarJuego();
         return; 
     }
     modal.addEventListener("keydown", event => {
+        guardarInputNombre();     
         if(event.keyCode == 13){ //Tecla Enter        
         iniciarJuego();           
         return; //volvemos y no se agrega la letra
         }
     });    
+    function guardarInputNombre() {
+        nombre=inputNombre.value; 
+        mensajeInicial= mensajeInicial+nombre;
+        localStorage.setItem("nombre", nombre);
+    } 
 }
 btnJugar.onclick =function(){   
          
@@ -74,12 +74,13 @@ btnJugar.onclick =function(){
     iniciarJuego();  
     
 }
-const adivinaArray= [];//array comodín para colocar data
+var adivinaArraycopia= [];//array comodín para colocar data
+var guardarAdivinanza =[];
 let columnaActual=0;
 let cajaActual=0;
 let finJuego=false;
 let listaWordle = ["MARZO", "LUNES", "NOVIA", "NOCHE", "CARRO", "ÑANDU", "CALLE", "SUPER", "ALOJA", "MURAL", "PERRO", "PLATA", "LIMON",];
-const wordle = listaWordle[Math.floor(Math.random() * listaWordle.length)];
+var wordle = listaWordle[Math.floor(Math.random() * listaWordle.length)];
 console.log("El arreglo es: ");
 console.log(listaWordle);
 console.log("Y una palabra aleatoria es: ");
@@ -100,7 +101,7 @@ const letras = ['Q','W','E','R','T','Y','U','I','O','P',
 'A','S','D','F','G','H','J','K','L','Ñ','ENTER',
 'Z','X','C','V','B','N','M','◄',]
 
-const grilla = [
+var grilla = [
     ['','','','',''],
     ['','','','',''],
     ['','','','',''],
@@ -109,11 +110,11 @@ const grilla = [
     ['','','','','']
 ]
 
-const iniciarJuego= () => { //aquí comienza el juego  
 
-    
+const iniciarJuego= () => { //aquí comienza el juego  
+   
     reloj();
-    //startTimer();
+    
     while (modal.firstChild) { //vaciamos el modal
         modal.removeChild(modal.firstChild);
     }  
@@ -160,7 +161,7 @@ const iniciarJuego= () => { //aquí comienza el juego
 
 
     const siNoEsLetra= (let) => {
-        if (!finJuego) {        
+        if (!finJuego) {      
             
             console.log("Cliqueaste ", let);
             if (let === "◄") {
@@ -181,9 +182,11 @@ const iniciarJuego= () => { //aquí comienza el juego
         const letraEnCaja = document.getElementById("columna-"+columnaActual+"-caja-"+cajaActual);
         letraEnCaja.value = le;
         grilla [columnaActual][cajaActual] = le;//agregamos a la grilla la letra actual
-        letraEnCaja.setAttribute("data", le); // agregamos al atrubuto data la letra actual
+        letraEnCaja.setAttribute("data", le); // agregamos al atrubuto data la letra actual   
+        letraEnCaja.setAttribute("columna", columnaActual); // agregamos al atrubuto columna nº columna 
+        letraEnCaja.setAttribute("fila", cajaActual);// agregamos al atrubuto fila nº fila 
+        letraEnCaja.focus();       
         cajaActual ++; 
-        letraEnCaja.focus();
         }
     }
     const borrarLetra = () =>{ // funcion que borra la letra actual
@@ -200,8 +203,7 @@ const iniciarJuego= () => { //aquí comienza el juego
     const concuerdaPalabra = () => {
         const palabraActual = grilla [columnaActual].join("");
         
-        if (cajaActual > 4) {
-            console.log("palabra actual es: "+palabraActual+" Y la palabra wordle es: "+wordle);
+        if (cajaActual > 4) {            
             colorearCaja(); //llamamos a la funcion para colorear los imput
             if (wordle == palabraActual) { // si avidinamos la palabra ganadora, finalizamos el juego
                 let mensaje="Adivinaste!!";
@@ -224,12 +226,11 @@ const iniciarJuego= () => { //aquí comienza el juego
             }
         }
     }
-    const darMensaje = (mensaje) => { //funcion que crea y muestra mensajes
+    const darMensaje = (mensaje) => { //funcion que crea y muestra mensaje en el modal
         modal.style.visibility= "visible";       
         const elementoMensaje = document.createElement("h2");//creamos <P>
         elementoMensaje.textContent = mensaje;     
-        modal.append(elementoMensaje);
-        
+        modal.append(elementoMensaje);        
 
         const btnCerrar = document.createElement("button");//creamos boton cerrar
         btnCerrar.textContent = "cerrar";
@@ -245,32 +246,45 @@ const iniciarJuego= () => { //aquí comienza el juego
     const colorearCaja = () => { // funcion que verifica la letra y colorea el input
         const filaCaja = document.querySelector("#columna"+columnaActual).childNodes;
         let remarcaCaja= wordle;
+        const adivinaArray= [];//array comodín para colocar data
         
-        
-        filaCaja.forEach(element => {
-            adivinaArray.push({letra : element.getAttribute("data"), color: "grisear"});// obtenemos el atributo con data de la letra
+       
+        filaCaja.forEach((element, index) => {
+            adivinaArray.push({letra : element.getAttribute("data"), color: "grisear", columna: columnaActual, fila: index});// obtenemos el atributo con data de la letra
+            
         });
+        //coloreamos las letras
         adivinaArray.forEach((ele, index) => {
             if (ele.letra == wordle[index]) {
                 ele.color = "verdear";
-                remarcaCaja = remarcaCaja.replace(ele.letra, "");            
+                ele.columna= columnaActual;                
+                ele.fila=index;              
+                remarcaCaja = remarcaCaja.replace(ele.letra, "");                                         
             }
         })
-        adivinaArray.forEach(e => {
+        adivinaArray.forEach((e, index) => {
             if (remarcaCaja.includes(e.letra)) {
                 e.color = "amarillear";
+                e.columna= columnaActual;
+                e.fila=index;                
                 remarcaCaja = remarcaCaja.replace(e.letra, "");
             }
         })
-        console.log("Array actual: ", adivinaArray);
-
+        
+        adivinaArraycopia=adivinaArray;// copiamos los datos locales para usar global
         filaCaja.forEach((input, indice) => {
-            input.classList.add(adivinaArray[indice].color);
-            colorearTablero(adivinaArray[indice].letra, adivinaArray[indice].color);
-        })
+            input.classList.add(adivinaArray[indice].color);            
+            colorearTablero(adivinaArray[indice].letra, adivinaArray[indice].color);                               
+        })        
+        console.log("Letras adivinanza:", adivinaArray);
+        
+        guardarAdivinanza.push([adivinaArray]);
+               
 
     }
-
+   
+ 
+    
     //funcionalidades de Reloj  
     function reloj() {       
 
@@ -286,7 +300,7 @@ const iniciarJuego= () => { //aquí comienza el juego
             if (finJuego){
                 clearInterval(reloj);
                 tiempo= mostrarReloj.textContent;                       
-                console.log("timer: "+tiempo);
+                console.log("tiempo: "+tiempo);
             }      
             if (++timer < 0) {
                 finJuego = null;                   
@@ -297,12 +311,30 @@ const iniciarJuego= () => { //aquí comienza el juego
     menuGuardar.addEventListener("click", function () {        
         //Array para guardar juego actual
         let guardar= {};
-
+        
+        console.log("matriz", guardarAdivinanza); //matriz con cada palabra tipeadas
         guardar.fecha = new Date().toLocaleString("es-AR", {timeZone:"America/Argentina/Buenos_Aires"});
         guardar.tiempo =tiempo;
-        guardar.respuestas = adivinaArray;
+        guardar.respuestas = adivinaArraycopia; //copia ultimo array
+        //guardar.respuestas = guardarAdivinanza;
         guardar.usuario = nombre;
-        guardar.palabraGanadora = wordle;        
+        guardar.palabraGanadora = wordle;  
+       
+        const datos= guardar.respuestas;               
+        let elementoLetra=""; 
+        let elementoColor=""; 
+        let elColumna="";
+        let elFila="";  
+        datos.forEach(elem=>{            
+            elementoLetra+=` ${elem.letra}  `;
+            elementoColor+=` ${elem.color}  `; 
+            elColumna+=` ${elem.columna} `; 
+            elFila+=` ${elem.fila} `;                                              
+        }); 
+        guardar.respuestas.elementoLetra= elementoLetra;
+        guardar.respuestas.elementoColor=elementoColor;
+        guardar.respuestas.elColumna=elColumna;
+        guardar.respuestas.elFila=elFila;
 
         //rescatamos los datos guardados"
         let guardarJuego = JSON.parse(localStorage.getItem("guardar")) || [];
@@ -311,26 +343,15 @@ const iniciarJuego= () => { //aquí comienza el juego
         //guardamos datos
         localStorage.setItem("guardar", guardarJuegoJSON);
 
-        console.log(guardarJuegoJSON) 
-
         //mostramos los datos actuales en el modal  
-        modal.style.visibility= "visible";       
-            
-        const datos= guardar.respuestas;
-        console.log(datos);   
-        let elementos="";               
-        datos.forEach(elem=>{
-            console.log(elem);
-            elementos+=`
-                <h6>${elem.letra} - ${elem.color}</h6>                                    
-                `;                                                    
-        }); 
+        modal.style.visibility= "visible";              
+       
         modal.innerHTML= `<h3>Juego guardado </h3>` +
         " Fecha "+guardar.fecha+
         " - Tiempo "+guardar.tiempo+
         " - Jugador "+guardar.usuario+
         " - Wordle "+guardar.palabraGanadora +            
-        " - Respuestas "+elementos;
+        " - Respuestas "+elementoLetra+elementoColor+elColumna+elFila;
         //boton para salir del modal
         const btnSalir = document.createElement("button");
         btnSalir.textContent = "salir";
@@ -339,32 +360,56 @@ const iniciarJuego= () => { //aquí comienza el juego
         modal.append(btnSalir);      
     });
 
-    menuCargar.addEventListener("click", function cargarPartida() { 
+    menuCargar.addEventListener("click", function cargarPartida(index=1) { 
 
-        var datos = JSON.parse(localStorage.getItem("guardar")) || [];
-            
-        modal.style.visibility= "visible";          
+        var datos = JSON.parse(localStorage.getItem("guardar")) || [];            
+        modal.style.visibility= "visible";              
         
-        let elementos=""; 
-        let letras ="";             
-        datos.forEach(elem=>{
-            console.log(elem);
+        let elementos="";  
+                        
+        datos.forEach((elem, index) => {   
+                
+            
             elementos+=`<tr class='table'>
-                            <td class='td'>${elem.fecha}</td>
-                            <td class='td'>${elem.tiempo}</td>
-                            <td class='td'>${elem.usuario}</td>
-                            <td class='td'>${elem.palabraGanadora}</td>                            
-                            <br>                            
-                        </tr>`;                                                        
-                                                                            
-        }); 
-        modal.innerHTML = elementos; 
-
+                            <p>${elem.fecha} ${elem.tiempo} ${elem.usuario} ${elem.palabraGanadora}</p>                           
+                        </tr>`;
+                        respuestas=elem.respuestas;
+                        respuestas.forEach((e, index)=>{
+                            elementos+=`<tr>    
+                                <p> - Letra: ${e.letra} ${e.color} C: ${e.columna} F: ${e.fila}</p>                                
+                            </tr>`;
+                        });    
+                                                                                          
+        });
+        var partidas = JSON.parse(localStorage.getItem("guardar")) || [];
+        partidas.forEach((ele, index) => {
+            tiempo = ele.tiempo;
+            nombre = ele.usuario;
+            wordle = ele.palabraGanadora;                
+            respuestas = ele.respuestas;
+            let letra, color, columna, fila;
+            console.log("comienzo de guradado...")
+            console.log("tiempo: ",tiempo);
+            console.log("usuario: ",nombre);
+            console.log("Palabra: ",wordle);    
+            
+            console.log("comienzo de respuesta...")        
+            respuestas.forEach((e, index)=>{                
+                console.log("letra: ",e.letra+" -color: ",e.color+" -columna: ",e.columna+" -fila : ",e.fila+"");
+                letra=e.letra; 
+                color=e.color;
+                columna=e.columna;
+                fila=e.fila;              
+            });
+        });
+        //visualizamos los elementos
+        modal.innerHTML = elementos;   
+        
          //boton para salir del modal
          const btnSalir = document.createElement("button");
          btnSalir.textContent = "salir";
          btnSalir.setAttribute("id", "salir");
-         btnSalir.addEventListener("click", () => location.href="index.html");//recargamos la pagina
+         btnSalir.addEventListener("click", () => location.href="index.html");//cerramos modal
          modal.append(btnSalir);  
     });
 }
