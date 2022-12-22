@@ -5,7 +5,8 @@ const modal = document.getElementById("modal");
 const mostrarReloj = document.getElementById("reloj");
 const menuGuardar= document.querySelector("#menuGuardar");
 var mensajeInicial="Hola ";
-var tiempo="";
+var tiempo=0;
+var recargaJuegoGuardado = false;
 
 modal.style.visibility= "visible";       
 var nombre = localStorage.getItem("nombre") || "";
@@ -111,46 +112,44 @@ var grilla = [
 ]
 
 
-const iniciarJuego= () => { //aquí comienza el juego  
-   
-    reloj();
+const iniciarJuego= () => { //aquí comienza el juego    
+    
     
     while (modal.firstChild) { //vaciamos el modal
         modal.removeChild(modal.firstChild);
     }  
     modal.style.visibility= "hidden"; 
-    console.log(mensajeInicial);
-
-    grilla.forEach((columna, columnaIndex) =>{ //recorremos la grilla y le agregamos inputs en el HTML
-        const elementoColumna=document.createElement("div");
-        elementoColumna.setAttribute("id","columna"+columnaIndex);
-        columna.forEach((caja, cajaIndex)=>{
-            const elementoFila=document.createElement("input");
-            elementoFila.setAttribute("id","columna-"+columnaIndex+"-caja-"+cajaIndex);
-            elementoFila.setAttribute("maxlength","1");
-            elementoFila.classList.add("caja");
-            elementoColumna.append(elementoFila);
-            
+    
+    if (recargaJuegoGuardado===false) {
+                
+        timer();
+        grilla.forEach((columna, columnaIndex) =>{ //recorremos la grilla y le agregamos inputs en el HTML
+            const elementoColumna=document.createElement("div");
+            elementoColumna.setAttribute("id","columna"+columnaIndex);
+            columna.forEach((caja, cajaIndex)=>{
+                const elementoFila=document.createElement("input");
+                elementoFila.setAttribute("id","columna-"+columnaIndex+"-caja-"+cajaIndex);
+                elementoFila.setAttribute("maxlength","1");
+                elementoFila.classList.add("caja");
+                elementoColumna.append(elementoFila);                
+            })
+            caja.append(elementoColumna);        
         })
-        caja.append(elementoColumna);        
-    })
-    letras.forEach(letra => { // creamos botones pare el tablero
-        const inputEntrada = document.createElement("button");
-        inputEntrada.textContent = letra;
-        inputEntrada.setAttribute("id", letra);
-        inputEntrada.addEventListener("click", () => siNoEsLetra(letra));//llamamos a la funcion al clickear
-        teclado.append(inputEntrada);
-    }) 
-     
+        letras.forEach(letra => { // creamos botones pare el tablero
+            const inputEntrada = document.createElement("button");
+            inputEntrada.textContent = letra;
+            inputEntrada.setAttribute("id", letra);
+            inputEntrada.addEventListener("click", () => siNoEsLetra(letra));//llamamos a la funcion al clickear
+            teclado.append(inputEntrada);
+        })         
+    } 
     //funcionalidades con el  teclado
     document.addEventListener("keydown", event => {
-        if(event.keyCode == 8){ //Tecla BackSpace
-            console.log('BackSpace');
+        if(event.keyCode == 8){ //Tecla BackSpace            
             borrarLetra();     
             return //volvemos y no se agrega la letra
         }
-        if(event.keyCode == 13){ //Tecla Enter
-        console.log('Enter');
+        if(event.keyCode == 13){ //Tecla Enter        
         concuerdaPalabra();           
         return //volvemos y no se agrega la letra
         }
@@ -178,15 +177,17 @@ const iniciarJuego= () => { //aquí comienza el juego
     }
 
     const agregarLetra = (le) => { //ponemos la letra dentro de la caja
+       
         if (cajaActual <5 && columnaActual <6) {            
         const letraEnCaja = document.getElementById("columna-"+columnaActual+"-caja-"+cajaActual);
         letraEnCaja.value = le;
+        
         grilla [columnaActual][cajaActual] = le;//agregamos a la grilla la letra actual
         letraEnCaja.setAttribute("data", le); // agregamos al atrubuto data la letra actual   
         letraEnCaja.setAttribute("columna", columnaActual); // agregamos al atrubuto columna nº columna 
         letraEnCaja.setAttribute("fila", cajaActual);// agregamos al atrubuto fila nº fila 
-        letraEnCaja.focus();       
-        cajaActual ++; 
+        letraEnCaja.focus();              
+        cajaActual ++;         
         }
     }
     const borrarLetra = () =>{ // funcion que borra la letra actual
@@ -218,8 +219,8 @@ const iniciarJuego= () => { //aquí comienza el juego
                     darMensaje(mensaje);
                     return
                 }
-                if (columnaActual < 5 ) { // si finalizamos la fila, saltamos a la fila siguiente de inputs
-                    columnaActual ++;
+                if (columnaActual < 5 ) { // si finalizamos la fila, saltamos a la fila siguiente de inputs                                                           
+                    columnaActual ++;                   
                     cajaActual =0;
                     document.getElementById("columna-"+columnaActual+"-caja-"+cajaActual).focus();
                 }
@@ -286,24 +287,28 @@ const iniciarJuego= () => { //aquí comienza el juego
  
     
     //funcionalidades de Reloj  
-    function reloj() {       
-
-        var timer =  1, minutos, segundos;
+    function timer() {
+        var tiempo = 0,
+        mostrarReloj = document.querySelector("#reloj");
+        reloj(tiempo, mostrarReloj);
+    }
+    function reloj(tiempo, mostrarReloj) { 
+        var timer =  tiempo, minutos, segundos; 
+                
         var reloj = setInterval(function () {
+            
             minutos = parseInt(timer / 60, 10);
-            segundos = parseInt(timer % 60, 10);    
+            segundos = parseInt(timer % 60, 10);                 
             minutos = minutos > 10 ? "0" + minutos : minutos;
-            segundos = segundos < 10 ? "0" + segundos : segundos;
-    
+            segundos = segundos < 10 ? "0" + segundos : segundos;            
             mostrarReloj.textContent = minutos + ":" + segundos;
             
             if (finJuego){
-                clearInterval(reloj);
-                tiempo= mostrarReloj.textContent;                       
-                console.log("tiempo: "+tiempo);
+                clearInterval(reloj);                
             }      
             if (++timer < 0) {
-                finJuego = null;                   
+                finJuego = null;
+                timer= tiempo;                              
             }
         }, 1000);
     }
@@ -314,7 +319,7 @@ const iniciarJuego= () => { //aquí comienza el juego
         
         console.log("matriz", guardarAdivinanza); //matriz con cada palabra tipeadas
         guardar.fecha = new Date().toLocaleString("es-AR", {timeZone:"America/Argentina/Buenos_Aires"});
-        guardar.tiempo =tiempo;
+        guardar.tiempo =mostrarReloj.textContent;        
         guardar.respuestas = adivinaArraycopia; //copia ultimo array
         //guardar.respuestas = guardarAdivinanza;
         guardar.usuario = nombre;
@@ -361,19 +366,18 @@ const iniciarJuego= () => { //aquí comienza el juego
     });
 
     menuCargar.addEventListener("click", function cargarPartida(index=1) { 
-
         var datos = JSON.parse(localStorage.getItem("guardar")) || [];            
         modal.style.visibility= "visible";              
-        
-        let elementos="";  
-                        
-        datos.forEach((elem, index) => {   
-                
-            
+        recargaJuegoGuardado=true;
+        console.log("cargar recargajuego buleno",recargaJuegoGuardado)
+        let elementos="";                          
+        datos.forEach((elem, index) => { 
+                           
             elementos+=`<tr class='table'>
                             <p>${elem.fecha} ${elem.tiempo} ${elem.usuario} ${elem.palabraGanadora}</p>                           
                         </tr>`;
                         respuestas=elem.respuestas;
+
                         respuestas.forEach((e, index)=>{
                             elementos+=`<tr>    
                                 <p> - Letra: ${e.letra} ${e.color} C: ${e.columna} F: ${e.fila}</p>                                
@@ -382,7 +386,7 @@ const iniciarJuego= () => { //aquí comienza el juego
                                                                                           
         });
         var partidas = JSON.parse(localStorage.getItem("guardar")) || [];
-        partidas.forEach((ele, index) => {
+        partidas.forEach((ele, indexCol) => {
             tiempo = ele.tiempo;
             nombre = ele.usuario;
             wordle = ele.palabraGanadora;                
@@ -391,25 +395,53 @@ const iniciarJuego= () => { //aquí comienza el juego
             console.log("comienzo de guradado...")
             console.log("tiempo: ",tiempo);
             console.log("usuario: ",nombre);
-            console.log("Palabra: ",wordle);    
+            console.log("Palabra ganadora: ",wordle);    
             
-            console.log("comienzo de respuesta...")        
-            respuestas.forEach((e, index)=>{                
+            console.log("comienzo de cargar datos letra...")  
+ 
+            respuestas.forEach((e, indexFila)=>{                
                 console.log("letra: ",e.letra+" -color: ",e.color+" -columna: ",e.columna+" -fila : ",e.fila+"");
                 letra=e.letra; 
                 color=e.color;
-                columna=e.columna;
-                fila=e.fila;              
+                columnaActual=e.columna;
+                cajaActual=e.fila;                  
+                agregarLetra(letra);
+                
             });
         });
         //visualizamos los elementos
-        modal.innerHTML = elementos;   
-        
+        modal.innerHTML = elementos;         
+        //prueba cargas
+        //cargar caja
+        concuerdaPalabra()
+         //Recargar tiempo guardado
+        let sec = tiempo.slice(2,4);
+        let min = tiempo.slice(0, 1);        
+        let secTransform = Math.round((sec/60) * 100);
+        let calculoTiempo = Math.round(((min + secTransform) /100) * 60);
+        var timer = calculoTiempo; 
+        display = document.querySelector("#reloj");
+        reloj(timer,display);     
+
          //boton para salir del modal
          const btnSalir = document.createElement("button");
          btnSalir.textContent = "salir";
          btnSalir.setAttribute("id", "salir");
          btnSalir.addEventListener("click", () => location.href="index.html");//cerramos modal
          modal.append(btnSalir);  
+         const btnCargar = document.createElement("button");
+         btnCargar.textContent = "cargar";
+         btnCargar.setAttribute("id", "cargar");
+         modal.append(btnCargar); 
+         btnCargar.addEventListener("click", () => btnCargar);//cerramos modal
+                 
+
+        btnCargar.onclick =function(){            
+            modal.style.visibility= "hidden";
+            const inputBuscar = document.createElement("input");//creamos una caja de texto para buscar  
+            inputBuscar.setAttribute("id", "inputBuscar"); 
+            inputBuscar.setAttribute("minlength", "3");   
+            modal.append(inputBuscar);
+        }   
     });
 }
